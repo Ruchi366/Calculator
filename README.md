@@ -6,8 +6,15 @@ def click(event):
     text = event.widget.cget("text")
     if text == "=":
         try:
-            expression = str(eval(expression))
-            screen.set(expression)
+            expr = expression.replace('√','sqrt')
+            expr = expression.replace('^','**')
+            expr = expression.replace('ln','log')
+            expr = expression.replace('log','log10')
+            expr = expression.replace('e',str(e))
+            expr = expression.replace('!','factorial')
+            result=eval(expr)
+            screen.set(result)
+            expression=str(result)
         except Exception:
             screen.set("Error")
             expression=" "
@@ -15,21 +22,30 @@ def click(event):
         expression=" "
         screen.set(expression)
     else:
-        expression += text
-        screen.set(expression)
+        if text in ['√','log','ln','sin','cos','tan','factorial','e']:
+            expression+=f"{text}("
+        elif text == ")":
+            expression+=")"
+        elif text=="!":
+            expression+="!"
+        else:
+            expression += text
+            screen.set(expression)
 root = tk.Tk()
 root.title("Calculator")
-root.geometry("300x400")
+root.geometry("400x600")
 expression = " "
 screen = tk.StringVar()
 
 entry = tk.Entry(root,textvar=screen,font="Arial 20 bold")
 entry.pack(fill="both",ipadx=8,padx=10,pady=10)
 buttons = [
-    ['7','8','9','/'],
-    ['4','5','6','*'],
-    ['1','2','3','-'],
-    ['0','.','=','+'],
+    ['log','ln','√','^','e'],
+    ['7','8','9','/','C'],
+    ['4','5','6','*','('],
+    ['1','2','3','-',')'],
+    ['0','.','=','+','^'],
+    ['!','sin','cos','tan',' o(=•ェ•=)m']
     ]
 for row in buttons:
     frame = tk.Frame(root)
@@ -38,8 +54,5 @@ for row in buttons:
         b= tk.Button(frame,text=btn,font="Arial 15",height=2,width=5)
         b.pack(side="left",expand=True,fill="both")
         b.bind("<Button-1>",click)
-clear_btn = tk.Button(root,text="C",font="Arial 15",height=2)
-clear_btn.pack(fill="both")
-clear_btn.bind("<Button-1>",click)
 
 root.mainloop()ct Responsive Calculator.
